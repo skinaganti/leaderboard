@@ -1,4 +1,5 @@
-// 1. create new collection and make accesible on both server and client
+
+// 1. create new collection and make accessible on both server and client
 PlayersList = new Meteor.Collection('players')
 
 if(Meteor.isClient){
