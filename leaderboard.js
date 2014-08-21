@@ -31,10 +31,34 @@ if(Meteor.isClient){
         { _id: selectedPlayer},
         {$inc: {score: 5}}
       )
-    }
+    },
 
+	'click #decrement': function(){
+      var selectedPlayer = Session.get('selected player')
+      PlayersList.update(
+        { _id: selectedPlayer},
+        {$inc: {score: -5}}
+      )
+    },
+
+	'click #remove': function(){
+		var selectedPlayer = Session.get('selected player')
+		PlayersList.remove(selectedPlayer)
+	}
+	
   });
 
+  Template.addPlayerForm.events({
+	'submit form': function(theEvent, theTemplate){
+		theEvent.preventDefault();
+		var playerNameVar = theTemplate.find('#playerName').value;
+		PlayersList.insert({
+			name: playerNameVar,
+			score: 0
+		});
+	}
+  });
+  
   // 4. use session variable to focus on specific element,
   // write template helper to update interface that shows which element the user acted on
   // i.e. highlight a section when a user clicks on it
