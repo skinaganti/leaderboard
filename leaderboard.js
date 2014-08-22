@@ -4,11 +4,17 @@ PlayersList = new Meteor.Collection('players')
 
 if(Meteor.isClient){
 
+  // Template variable 
   // 2. write template helper to return collection
   Template.leaderboard.player = function(){
-    return PlayersList.find({}, {sort: {score : -1, name: 1}});  
+	var currentUserID = Meteor.userId();
+    return PlayersList.find(		  // if the first {} is blank, this returns all players in collection	
+		{createdBy: currentUserID},   // returns a selection of players created by current User
+		{sort: {score : -1, name: 1}}
+	);  
   }
 
+  // Template events
   Template.leaderboard.events({
 
     // 3. create interface to show collection,
@@ -39,7 +45,7 @@ if(Meteor.isClient){
         { _id: selectedPlayer},
         {$inc: {score: -5}}
       )
-    },
+	},
 
 	'click #remove': function(){
 		var selectedPlayer = Session.get('selected player')
@@ -51,14 +57,20 @@ if(Meteor.isClient){
   Template.addPlayerForm.events({
 	'submit form': function(theEvent, theTemplate){
 		theEvent.preventDefault();
+		
 		var playerNameVar = theTemplate.find('#playerName').value;
+	
+		var currentUserID = Meteor.userId();
+		
 		PlayersList.insert({
 			name: playerNameVar,
-			score: 0
+			score: 0,
+			createdBy: currentUserID
 		});
 	}
   });
-  
+
+  // Template variable 
   // 4. use session variable to focus on specific element,
   // write template helper to update interface that shows which element the user acted on
   // i.e. highlight a section when a user clicks on it
@@ -70,6 +82,7 @@ if(Meteor.isClient){
     }
   }
 
+  // Template variable
   // 6. use session variable to focus on specific element and return that element from collection 
   Template.leaderboard.showSelectedPlayer = function(){
     var selectedPlayer = Session.get('selected player');
