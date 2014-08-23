@@ -4,6 +4,8 @@ PlayersList = new Meteor.Collection('players')
 
 if(Meteor.isClient){
 
+	Meteor.subscribe('thePlayers');
+
   // Template variable 
   // 2. write template helper to return collection
   Template.leaderboard.player = function(){
@@ -92,5 +94,11 @@ if(Meteor.isClient){
 }
 
 if(Meteor.isServer){
-  
+  Meteor.publish('thePlayers', function(){
+    var currentUserID = this.userId;
+	return PlayersList.find({ createdBy: currentUserID });
+  });
 }
+
+
+
